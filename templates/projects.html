@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        #navigation {
+            text-align: center;
+            padding: 10px;
+            position: sticky;
+            top: 0px;
+        }
+        #navigation a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: black;
+        }
+        body {
+            margin: 10px;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: 98vw;
+            height: 100vh;
+            background-color: aliceblue;
+            background: linear-gradient(to right bottom, rgb(240, 95, 95) 50%, rgb(242, 156, 156) 75%);
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Zach Buskey</title>
+</head>
+<body>
+    <nav id="navigation">
+        <a href="../mywebsite.html">Home</a>
+        <a href="/computer-science">Computer Science</a>
+        <a href="amazon.html">Amazon</a>
+        <a href="templates\projects.html">Projects</a>
+        <a href="Resume-Zach-Buskey-TECH.pdf" target="_blank">Resume</a>
+    </nav>
+    <h1>9-11 Occupation Search</h1>
+    <form id="searchForm">
+        <label for="occupationQuery">Search for Occupations:</label>
+        <input type="text" id="occupationQuery" required>
+        <button type="button" onclick="search()">Search</button>
+    </form>
+
+    <!-- Add this div for displaying search results -->
+    <div id="searchResults"></div>
+    <a id="top"></a> 
+
+    <script>
+        function displayResults(results) {
+            var resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+    
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+    
+            var table = '<table>';
+            // Assuming the first result contains column names
+            table += '<thead><tr>';
+            Object.keys(results[0]).forEach(column => {
+                table += '<th style="text-align: center;">' + column + '</th>';
+            });
+            table += '</tr></thead><tbody>';
+            results.forEach(result => {
+                table += '<tr>';
+                table += '<td>' + result.Name + '</td>';
+                table += '<td>' + result.Age + '</td>';
+                table += '<td>' + result.Hometown + '</td>';
+                table += '<td>' + result.Occupation + '</td>';
+                table += '</tr>';
+            });
+                
+    
+            table += '</tbody></table>';
+            resultsDiv.innerHTML = table;
+        }
+        function search() {
+            var query = document.getElementById('occupationQuery').value;
+            fetch('http://localhost:3000/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ occupation_query: query }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Search Results:', data);
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }               
+    </script>
+    <a href="#top">Back to top</a>
+</body>
+</html>
