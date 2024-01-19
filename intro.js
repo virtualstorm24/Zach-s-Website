@@ -1,4 +1,4 @@
-
+console.log("Intro.js loaded successfully!");
 let header = document.querySelector('#intro');
 let aim = [
     { t: "{ }", ms: 500 },
